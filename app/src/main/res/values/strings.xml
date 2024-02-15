@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Trending Movies</string>
+    <string name="can_t_fetch_movies">Unable to fetch movies</string>
 </resources>
