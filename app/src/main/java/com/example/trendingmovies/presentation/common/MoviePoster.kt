@@ -1,12 +1,13 @@
-package com.example.trendingmovies.presentation.movies
+package com.example.trendingmovies.presentation.common
 
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import com.example.trendingmovies.R
@@ -29,6 +30,7 @@ fun MoviePoster(
     Image(
         painter = painter,
         contentDescription = "movie poster",
-        modifier = modifier
+        modifier = modifier,
+        alignment = Alignment.CenterStart
     )
 }

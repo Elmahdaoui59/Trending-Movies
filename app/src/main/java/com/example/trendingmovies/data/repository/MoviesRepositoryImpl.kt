@@ -7,6 +7,7 @@ import com.example.trendingmovies.R
 import com.example.trendingmovies.data.remote.MoviesApi
 import com.example.trendingmovies.domain.model.MoviesResponse
 import com.example.trendingmovies.domain.model.WebResponse
+import com.example.trendingmovies.domain.model.moviedetail.MovieDetail
 import com.example.trendingmovies.domain.repositories.MoviesRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -14,11 +15,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.BufferedReader
-import java.io.InputStream
 import java.io.InputStreamReader
-import java.lang.Exception
-import java.security.PrivateKey
-import javax.inject.Inject
+import kotlin.Exception
 
 class MoviesRepositoryImpl(
     private val api: MoviesApi,
@@ -35,10 +33,10 @@ class MoviesRepositoryImpl(
                 val jsonResponse = reader.readLine()
                 val response = gson.fromJson(jsonResponse, MoviesResponse::class.java)
                 emit(WebResponse.Success(response))
-                Log.e("res", "Response from mock: ${response.toString()}")
+                //Log.e("res", "Movies Response from mock: ${response.toString()}")
             } else {
                 val response = api.getMovies()
-                Log.e("res", response.toString())
+                //Log.e("res", response.toString())
                 emit(WebResponse.Success(response))
             }
         } catch (e: Exception) {
@@ -48,6 +46,28 @@ class MoviesRepositoryImpl(
             emit(WebResponse.Failure(R.string.can_t_fetch_movies))
         }
     }.flowOn(Dispatchers.IO)
+
+    override fun getMovieDetail(movieId: Int): Flow<WebResponse<MovieDetail>> = flow {
+        emit(WebResponse.Loading)
+        try {
+            if (BuildConfig.useMock) {
+                val gson = Gson()
+                val inputStream = context.resources.openRawResource(R.raw.moviedetailmock)
+                val reader = BufferedReader(InputStreamReader(inputStream))
+                val jsonResponse = reader.readText()
+                val response = gson.fromJson(jsonResponse, MovieDetail::class.java)
+                emit(WebResponse.Success(response))
+                //Log.e("res", "Movie Detail Response from mock: ${response.toString()}")
+            } else {
+                val result = api.getMovieDetail(movieId)
+                emit(WebResponse.Success(result))
+                //Log.e("detail", result.toString())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(WebResponse.Failure(R.string.can_t_fetch_movie_detail))
+        }
+    }
 
 
 }

@@ -1,4 +1,4 @@
-package com.example.trendingmovies.presentation.movies
+package com.example.trendingmovies.presentation.moviedetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,23 +14,30 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MoviesViewModel @Inject constructor(
+class MovieDetailViewModel @Inject constructor(
     private val moviesRepository: MoviesRepository
 ) : ViewModel() {
 
-    private val _moviesUiState: MutableStateFlow<MoviesUiState> = MutableStateFlow(MoviesUiState())
-    val moviesUiState: StateFlow<MoviesUiState> = _moviesUiState.asStateFlow()
 
-    init {
-        getMovies()
+    private val _movieDetailUiState: MutableStateFlow<MovieDetailUiState> = MutableStateFlow(
+        MovieDetailUiState()
+    )
+    val movieDetailUiState: StateFlow<MovieDetailUiState> = _movieDetailUiState.asStateFlow()
+
+    fun handleEvent(event: MovieDetailEvent) {
+        when(event) {
+            is MovieDetailEvent.RequestMovieDetail -> {
+                getMovieDetail(event.movieId)
+            }
+        }
     }
 
-    private fun getMovies() {
+    private fun getMovieDetail(movieId: Int) {
         viewModelScope.launch {
-            moviesRepository.getMovies().collect { result ->
+            moviesRepository.getMovieDetail(movieId).collect { result ->
                 when (result) {
                     is WebResponse.Loading -> {
-                        _moviesUiState.update {
+                        _movieDetailUiState.update {
                             it.copy(
                                 isLoading = true,
                                 errorId = null
@@ -39,17 +46,20 @@ class MoviesViewModel @Inject constructor(
                     }
 
                     is WebResponse.Success -> {
-                        _moviesUiState.update {
+                        _movieDetailUiState.update {
                             it.copy(
                                 isLoading = false,
                                 errorId = null,
-                                movies = result.data.movies
+                                title = result.data.title,
+                                overview = result.data.overview,
+                                posterPath = result.data.poster_path,
+                                releaseDate = result.data.release_date
                             )
                         }
                     }
 
                     is WebResponse.Failure -> {
-                        _moviesUiState.update {
+                        _movieDetailUiState.update {
                             it.copy(
                                 isLoading = false,
                                 errorId = result.messageId
@@ -57,8 +67,8 @@ class MoviesViewModel @Inject constructor(
                         }
                     }
                 }
+
             }
         }
     }
-
 }

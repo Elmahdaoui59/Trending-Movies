@@ -44,7 +44,7 @@ android {
         }
         debug {
             isDebuggable = true
-            buildConfigField("boolean", "useMock", "true")
+            buildConfigField("boolean", "useMock", "false")
         }
     }
     compileOptions {
@@ -93,6 +93,7 @@ dependencies {
     // Hilt
     implementation("com.google.dagger:hilt-android:2.47")
     ksp("com.google.dagger:hilt-android-compiler:2.47")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
