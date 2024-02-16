@@ -26,6 +26,13 @@ class MoviesViewModel @Inject constructor(
     init {
         getMovies()
     }
+    fun handleEvent(event: MoviesEvent) {
+        when(event) {
+            is MoviesEvent.RefreshMovies -> {
+                getMovies()
+            }
+        }
+    }
 
     private fun getMovies() {
         viewModelScope.launch {

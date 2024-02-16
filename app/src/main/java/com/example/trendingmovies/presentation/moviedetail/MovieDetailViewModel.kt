@@ -35,6 +35,9 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     private fun getMovieDetail(movieId: Int) {
+        _movieDetailUiState.update {
+            MovieDetailUiState()
+        }
         viewModelScope.launch {
             moviesRepository.getMovieDetail(movieId).collect { result ->
                 when (result) {

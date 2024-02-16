@@ -32,6 +32,7 @@ import com.example.trendingmovies.presentation.getScreenTitleByRoute
 import com.example.trendingmovies.presentation.moviedetail.MovieDetailEvent
 import com.example.trendingmovies.presentation.moviedetail.MovieDetailViewModel
 import com.example.trendingmovies.presentation.moviedetail.MovieDetailsScreen
+import com.example.trendingmovies.presentation.movies.MoviesEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +94,8 @@ fun SetupNavGraph(
                     innerPadding = innerPadding,
                     onIemClicked = {
                         navController.navigate("${Screen.MovieDetailScreen.route}/$it")
-                    }
+                    },
+                    onRefresh = { moviesViewModel.handleEvent(MoviesEvent.RefreshMovies) }
                 )
             }
             composable(
