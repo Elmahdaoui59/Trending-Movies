@@ -25,8 +25,13 @@ android {
         }
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
+        // To secure the key : I wanted to add this key to local.properties file and retrieve it here like that:
+        //buildConfigField("String", "MOVIES_API_KEY", "\"${properties.getProperty("MOVIES_API_KEY")}\"")
+        // But the project wont find the key when you build it as local.properties is not pushed to Github
+        // So I hard code it here
+        buildConfigField("String", "MOVIES_API_KEY", "\"c9856d0cb57c3f14bf75bdc6c063b8f3\"")
         buildConfigField("String", "BASE_URL", "\"https://api.themoviedb.org/3/\"")
-        buildConfigField("String", "MOVIES_API_KEY", "\"${properties.getProperty("MOVIES_API_KEY")}\"")
+        buildConfigField("String", "POSTER_BASE_URL", "\"https://image.tmdb.org/t/p/w500\"")
     }
 
     buildTypes {
@@ -36,6 +41,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            isDebuggable = true
+            buildConfigField("boolean", "useMock", "true")
         }
     }
     compileOptions {
@@ -77,6 +86,10 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
     // Hilt
     implementation("com.google.dagger:hilt-android:2.47")
     ksp("com.google.dagger:hilt-android-compiler:2.47")
@@ -85,4 +98,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.1.0")
 }

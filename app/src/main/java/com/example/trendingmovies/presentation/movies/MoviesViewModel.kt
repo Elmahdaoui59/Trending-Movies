@@ -1,9 +1,10 @@
-package com.example.trendingmovies.presentation
+package com.example.trendingmovies.presentation.movies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.trendingmovies.domain.model.WebResponse
 import com.example.trendingmovies.domain.repositories.MoviesRepository
+import com.example.trendingmovies.presentation.movies.MoviesUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

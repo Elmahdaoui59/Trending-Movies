@@ -1,4 +1,4 @@
-package com.example.trendingmovies.presentation
+package com.example.trendingmovies.presentation.movies
 
 import com.example.trendingmovies.domain.model.Movie
 

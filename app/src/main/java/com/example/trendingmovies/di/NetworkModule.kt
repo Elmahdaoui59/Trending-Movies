@@ -1,5 +1,6 @@
 package com.example.trendingmovies.di
 
+import android.content.Context
 import com.example.trendingmovies.BuildConfig
 import com.example.trendingmovies.data.remote.MoviesApi
 import com.example.trendingmovies.data.repository.MoviesRepositoryImpl
@@ -7,6 +8,7 @@ import com.example.trendingmovies.domain.repositories.MoviesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -48,9 +50,10 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideMoviesRepo(
-        api: MoviesApi
+        api: MoviesApi,
+        @ApplicationContext context: Context
     ): MoviesRepository {
-        return MoviesRepositoryImpl(api)
+        return MoviesRepositoryImpl(api, context)
     }
 
 }
