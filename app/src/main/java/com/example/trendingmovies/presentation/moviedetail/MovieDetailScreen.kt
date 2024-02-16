@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,19 +20,35 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.trendingmovies.BuildConfig
 import com.example.trendingmovies.presentation.common.MoviePoster
+import com.example.trendingmovies.presentation.common.UiEvent
+import com.example.trendingmovies.presentation.eventFlow
+import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
 fun MovieDetailsScreen(
+    snackbarHostState: SnackbarHostState,
     uiState: MovieDetailUiState,
     innerPadding: PaddingValues,
     onRequestMovieDetail: () -> Unit
 ) {
 
+
+    val ctx = LocalContext.current
+    LaunchedEffect(key1 = true) {
+        eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEvent.ShowSnackBar -> {
+                    snackbarHostState.showSnackbar(message = event.getMsgAsString(ctx))
+                }
+            }
+        }
+    }
     LaunchedEffect(key1 = true) {
         onRequestMovieDetail()
     }

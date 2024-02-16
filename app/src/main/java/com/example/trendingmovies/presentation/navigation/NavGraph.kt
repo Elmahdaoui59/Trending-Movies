@@ -6,11 +6,16 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,8 +48,21 @@ fun SetupNavGraph(
     val navBackStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(
+                    snackbarData = it,
+                    contentColor = MaterialTheme.colorScheme.error,
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                )
+            }
+        },
         topBar = {
             TopAppBar(
                 title = {
@@ -70,6 +88,7 @@ fun SetupNavGraph(
         ) {
             composable(Screen.MoviesScreen.route) {
                 MoviesListScreen(
+                    snackbarHostState = snackbarHostState,
                     state = moviesUiState,
                     innerPadding = innerPadding,
                     onIemClicked = {
@@ -88,6 +107,7 @@ fun SetupNavGraph(
                 val movieId = backStackEntry.arguments?.getInt("movieId")
                 movieId?.let {
                     MovieDetailsScreen(
+                        snackbarHostState = snackbarHostState,
                         uiState = movieDetailUiState,
                         innerPadding = innerPadding,
                         onRequestMovieDetail = {

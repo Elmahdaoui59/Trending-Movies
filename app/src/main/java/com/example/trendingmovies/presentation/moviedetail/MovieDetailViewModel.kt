@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.trendingmovies.domain.model.WebResponse
 import com.example.trendingmovies.domain.repositories.MoviesRepository
+import com.example.trendingmovies.presentation.common.UiEvent
+import com.example.trendingmovies.presentation.eventFlow
 import com.example.trendingmovies.presentation.movies.MoviesUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,6 +61,7 @@ class MovieDetailViewModel @Inject constructor(
                     }
 
                     is WebResponse.Failure -> {
+                        sendUiError(result.messageId)
                         _movieDetailUiState.update {
                             it.copy(
                                 isLoading = false,
@@ -69,6 +72,11 @@ class MovieDetailViewModel @Inject constructor(
                 }
 
             }
+        }
+    }
+    private fun sendUiError(messageId: Int) {
+        viewModelScope.launch {
+            eventFlow.emit(UiEvent.ShowSnackBar(messageId))
         }
     }
 }
