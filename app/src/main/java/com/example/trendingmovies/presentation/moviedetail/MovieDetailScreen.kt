@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,23 +55,27 @@ fun MovieDetailsScreen(
     LaunchedEffect(key1 = true) {
         onRequestMovieDetail()
     }
-    Column(
+    Card(
         modifier = Modifier
             .padding(10.dp)
             .padding(paddingValues = innerPadding)
     ) {
         Row(
-            modifier = Modifier.padding(10.dp),
             horizontalArrangement = Arrangement.Start
         ) {
             val moviePosterUrl by remember(uiState.posterPath) {
                 mutableStateOf(BuildConfig.POSTER_BASE_URL + uiState.posterPath)
             }
             MoviePoster(url = moviePosterUrl, modifier = Modifier.size(200.dp))
-            uiState.title?.let { Text(text = it, fontWeight = FontWeight.Bold) }
+            uiState.title?.let { Text(
+                text = it,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(10.dp),
+                style = MaterialTheme.typography.titleLarge
+            ) }
         }
-        Spacer(modifier = Modifier.height(20.dp))
-        uiState.overview?.let { Text(text = it) }
+        Spacer(modifier = Modifier.height(10.dp))
+        uiState.overview?.let { Text(text = it, modifier = Modifier.padding(5.dp), style = MaterialTheme.typography.bodyLarge) }
     }
     if (uiState.isLoading) {
         Box(
