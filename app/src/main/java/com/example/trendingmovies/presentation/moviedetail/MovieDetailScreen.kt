@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.trendingmovies.BuildConfig
@@ -37,8 +40,6 @@ fun MovieDetailsScreen(
     innerPadding: PaddingValues,
     onRequestMovieDetail: () -> Unit
 ) {
-
-
     val ctx = LocalContext.current
     LaunchedEffect(key1 = true) {
         eventFlow.collectLatest { event ->
@@ -61,12 +62,13 @@ fun MovieDetailsScreen(
             modifier = Modifier.padding(10.dp),
             horizontalArrangement = Arrangement.Start
         ) {
-            val moviePosterUrl  by remember(uiState.posterPath) {
+            val moviePosterUrl by remember(uiState.posterPath) {
                 mutableStateOf(BuildConfig.POSTER_BASE_URL + uiState.posterPath)
             }
             MoviePoster(url = moviePosterUrl, modifier = Modifier.size(200.dp))
-            uiState.title?.let { Text(text = it) }
+            uiState.title?.let { Text(text = it, fontWeight = FontWeight.Bold) }
         }
+        Spacer(modifier = Modifier.height(20.dp))
         uiState.overview?.let { Text(text = it) }
     }
     if (uiState.isLoading) {

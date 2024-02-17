@@ -2,11 +2,12 @@ package com.example.trendingmovies.presentation.movies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.trendingmovies.domain.model.WebResponse
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.trendingmovies.domain.model.Movie
 import com.example.trendingmovies.domain.repositories.MoviesRepository
 import com.example.trendingmovies.presentation.common.UiEvent
 import com.example.trendingmovies.presentation.eventFlow
-import com.example.trendingmovies.presentation.movies.MoviesUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,14 +21,16 @@ class MoviesViewModel @Inject constructor(
     private val moviesRepository: MoviesRepository
 ) : ViewModel() {
 
-    private val _moviesUiState: MutableStateFlow<MoviesUiState> = MutableStateFlow(MoviesUiState())
-    val moviesUiState: StateFlow<MoviesUiState> = _moviesUiState.asStateFlow()
+    private val _moviesList: MutableStateFlow<PagingData<Movie>> =
+        MutableStateFlow(value = PagingData.empty())
+    val moviesList: StateFlow<PagingData<Movie>> = _moviesList.asStateFlow()
 
     init {
         getMovies()
     }
+
     fun handleEvent(event: MoviesEvent) {
-        when(event) {
+        when (event) {
             is MoviesEvent.RefreshMovies -> {
                 getMovies()
             }
@@ -36,45 +39,14 @@ class MoviesViewModel @Inject constructor(
 
     private fun getMovies() {
         viewModelScope.launch {
-            moviesRepository.getMovies().collect { result ->
-                when (result) {
-                    is WebResponse.Loading -> {
-                        _moviesUiState.update {
-                            it.copy(
-                                isLoading = true,
-                                errorId = null
-                            )
-                        }
-                    }
-
-                    is WebResponse.Success -> {
-                        _moviesUiState.update {
-                            it.copy(
-                                isLoading = false,
-                                errorId = null,
-                                movies = result.data.movies
-                            )
-                        }
-                    }
-
-                    is WebResponse.Failure -> {
-                        sendUiError(result.messageId)
-                        _moviesUiState.update {
-                            it.copy(
-                                isLoading = false,
-                                errorId = result.messageId
-                            )
-                        }
+            moviesRepository
+                .getMovies()
+                .cachedIn(viewModelScope)
+                .collect { result: PagingData<Movie> ->
+                    _moviesList.update {
+                        result
                     }
                 }
-            }
         }
     }
-
-    private fun sendUiError(messageId: Int) {
-        viewModelScope.launch {
-            eventFlow.emit(UiEvent.ShowSnackBar(messageId))
-        }
-    }
-
 }

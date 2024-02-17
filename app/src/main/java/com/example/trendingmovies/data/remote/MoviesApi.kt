@@ -12,7 +12,8 @@ interface MoviesApi {
 
     @GET("discover/movie")
     suspend fun getMovies(
-        @Query("api_key") apiKey: String = BuildConfig.MOVIES_API_KEY
+        @Query("api_key") apiKey: String = BuildConfig.MOVIES_API_KEY,
+        @Query("page") page: Int
     ): MoviesResponse
 
     @GET("movie/{movieId}")

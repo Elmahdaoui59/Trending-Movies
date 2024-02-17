@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Trending Movies</string>
-    <string name="can_t_fetch_movies">Unable to fetch movies</string>
-    <string name="can_t_fetch_movie_detail">Unable to fetch movie\'s detail</string>
+    <string name="can_t_fetch_movies">Unable to fetch movies, verify internet connection</string>
+    <string name="can_t_fetch_movie_detail">Unable to fetch movie\'s detail, verify internet connection</string>
 </resources>

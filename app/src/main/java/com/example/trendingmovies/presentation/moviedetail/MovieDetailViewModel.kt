@@ -31,6 +31,8 @@ class MovieDetailViewModel @Inject constructor(
             is MovieDetailEvent.RequestMovieDetail -> {
                 getMovieDetail(event.movieId)
             }
+
+            else -> {}
         }
     }
 

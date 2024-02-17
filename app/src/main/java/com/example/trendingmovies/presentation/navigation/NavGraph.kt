@@ -26,6 +26,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.trendingmovies.domain.model.Movie
 import com.example.trendingmovies.presentation.movies.MoviesListScreen
 import com.example.trendingmovies.presentation.movies.MoviesViewModel
 import com.example.trendingmovies.presentation.getScreenTitleByRoute
@@ -41,7 +44,7 @@ fun SetupNavGraph(
 ) {
 
     val moviesViewModel = hiltViewModel<MoviesViewModel>()
-    val moviesUiState by moviesViewModel.moviesUiState.collectAsStateWithLifecycle()
+    val moviesList: LazyPagingItems<Movie> = moviesViewModel.moviesList.collectAsLazyPagingItems()
 
     val movieDetailViewModel = hiltViewModel<MovieDetailViewModel>()
     val movieDetailUiState by movieDetailViewModel.movieDetailUiState.collectAsStateWithLifecycle()
@@ -90,7 +93,7 @@ fun SetupNavGraph(
             composable(Screen.MoviesScreen.route) {
                 MoviesListScreen(
                     snackbarHostState = snackbarHostState,
-                    state = moviesUiState,
+                    moviesList = moviesList,
                     innerPadding = innerPadding,
                     onIemClicked = {
                         navController.navigate("${Screen.MovieDetailScreen.route}/$it")
