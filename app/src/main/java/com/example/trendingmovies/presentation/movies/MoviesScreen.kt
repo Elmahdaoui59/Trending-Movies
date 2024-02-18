@@ -1,5 +1,6 @@
 package com.example.trendingmovies.presentation.movies
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,12 +40,15 @@ fun MoviesListScreen(
     onIemClicked: (Int) -> Unit,
     onRefresh: () -> Unit
 ) {
-
     val coroutineScope = rememberCoroutineScope()
     val swipeRefreshState = rememberPullRefreshState(
-        refreshing = (moviesList.loadState.refresh is LoadState.Loading)
-                or (moviesList.loadState.append is LoadState.Loading),
-        onRefresh = { onRefresh() })
+        refreshing = (moviesList.loadState.mediator?.refresh is LoadState.Loading)
+                or (moviesList.loadState.mediator?.append is LoadState.Loading),
+        onRefresh = {
+            onRefresh()
+        }
+    )
+
 
     Box(
         modifier = Modifier
@@ -82,18 +86,19 @@ fun MoviesListScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 item {
-                    Text(text = "Nod data")
+                    Text(text = "No data")
                 }
             }
         }
         PullRefreshIndicator(
-            refreshing = (moviesList.loadState.refresh is LoadState.Loading)
-                    or (moviesList.loadState.append is LoadState.Loading),
+            refreshing = (moviesList.loadState.mediator?.append is LoadState.Loading)
+                    or (moviesList.loadState.mediator?.refresh is LoadState.Loading),
             state = swipeRefreshState,
             modifier = Modifier.align(Alignment.TopCenter),
             backgroundColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.primary
         )
+
         // this part to show an error (if any) in a SnackBar
         LaunchedEffect(key1 = moviesList.loadState) {
             // should be in Launched effect block so that loadState is not check on every recomposition

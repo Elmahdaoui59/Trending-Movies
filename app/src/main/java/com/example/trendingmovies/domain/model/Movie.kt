@@ -1,6 +1,12 @@
 package com.example.trendingmovies.domain.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "movies")
 data class Movie(
+    @PrimaryKey(autoGenerate = true)
+    val key: Long,
     val adult: Boolean,
     val backdrop_path: String,
     val genre_ids: List<Int>,

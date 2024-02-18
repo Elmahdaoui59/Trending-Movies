@@ -2,6 +2,7 @@ package com.example.trendingmovies.di
 
 import android.content.Context
 import com.example.trendingmovies.BuildConfig
+import com.example.trendingmovies.data.local.MoviesDatabase
 import com.example.trendingmovies.data.remote.MoviesApi
 import com.example.trendingmovies.data.repository.MoviesRepositoryImpl
 import com.example.trendingmovies.domain.repositories.MoviesRepository
@@ -51,9 +52,10 @@ object NetworkModule {
     @Singleton
     fun provideMoviesRepo(
         api: MoviesApi,
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        moviesDatabase: MoviesDatabase
     ): MoviesRepository {
-        return MoviesRepositoryImpl(api, context)
+        return MoviesRepositoryImpl(api, context, moviesDatabase)
     }
 
 }
